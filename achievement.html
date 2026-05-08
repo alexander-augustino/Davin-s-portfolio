@@ -33,13 +33,49 @@
 
         /* Glassmorphism Card */
         .glass-card {
+            position: relative; /* Penting untuk background constellation */
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px;
             padding: 40px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            overflow: hidden; /* Supaya rasi bintang nggak keluar jalur */
         }
+
+        /* Pisces Constellation Background inside Card */
+        .card-constellation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Di belakang teks */
+            pointer-events: none; /* Biar tetap bisa klik item achievement */
+            opacity: 0.4;
+        }
+
+        .pisces-path {
+            stroke: var(--accent-blue);
+            stroke-width: 1.5;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawConstellation 5s forwards ease-in-out;
+            filter: drop-shadow(0 0 8px var(--accent-blue));
+        }
+
+        .star-point {
+            fill: var(--accent-blue);
+            filter: drop-shadow(0 0 10px var(--accent-blue));
+            animation: blinkStar 3s infinite alternate;
+        }
+
+        @keyframes drawConstellation { to { stroke-dashoffset: 0; } }
+        @keyframes blinkStar { from { opacity: 0.4; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
+
+        /* Content should be above constellation */
+        .card-content { position: relative; z-index: 1; }
 
         .achievement-item { 
             cursor: pointer; 
@@ -61,7 +97,6 @@
         .badge { font-weight: 500; padding: 0.5em 1em; }
         hr { opacity: 0.1; border-color: white; }
 
-        /* Modal & Carousel Space Theme */
         .modal-content { background: #0a0e14; border: 1px solid var(--accent-blue); border-radius: 20px; color: white; }
         .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); }
         .carousel-item img { border-radius: 10px; max-height: 500px; object-fit: contain; width: 100%; background: #000; }
@@ -94,7 +129,7 @@
 
 <div class="header-section">
     <div class="container">
-        <h1 class="display-3 fw-bold text-reveal">My Achievements</h1>
+        <h1 class="display-3 fw-bold text-reveal">Stellarium of Achievements</h1>
         <p class="lead text-info text-reveal">"Menuju Tak Terbatas, dan Melampauinya!"</p>
     </div>
 </div>
@@ -104,47 +139,66 @@
         <div class="col-lg-10">
             <div class="glass-card text-reveal">
                 
-                <h4 class="fw-bold mb-3 text-info">Sekolah Menengah Pertama</h4>
-                <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalKSN">
-                    <span class="badge bg-primary me-2">Juara 2</span> OSN-P IPS 2021 <small class="text-white-50 ms-2">(Klik untuk sertifikat)</small>
-                </div>
-                <div class="achievement-item mb-2">
-                    <span class="badge bg-primary me-2">Juara 3</span> OSN-K Matematika
-                </div>
-                <div class="achievement-item mb-4">
-                    <span class="badge bg-secondary me-2">Organisasi</span> Supervisor & Staff Ahli OSIS
-                </div>
+                <svg class="card-constellation" viewBox="0 0 800 600">
+                    <path class="pisces-path" d="M100,150 L250,220 L400,280 L500,450 L650,520 L750,480 M650,520 L720,580 L780,520 L720,460 L650,520 M100,150 L50,100 L80,30 L150,50 L100,150" />
+                    
+                    <circle class="star-point" cx="100" cy="150" r="4" />
+                    <circle class="star-point" cx="250" cy="220" r="3" />
+                    <circle class="star-point" cx="400" cy="280" r="3" />
+                    <circle class="star-point" cx="500" cy="450" r="3" />
+                    <circle class="star-point" cx="650" cy="520" r="5" />
+                    <circle class="star-point" cx="750" cy="480" r="3" />
+                    <circle class="star-point" cx="720" cy="580" r="3" />
+                    <circle class="star-point" cx="780" cy="520" r="3" />
+                    <circle class="star-point" cx="720" cy="460" r="3" />
+                    <circle class="star-point" cx="50" cy="100" r="3" />
+                    <circle class="star-point" cx="80" cy="30" r="3" />
+                    <circle class="star-point" cx="150" cy="50" r="3" />
+                </svg>
 
-                <hr>
+                <div class="card-content">
+                    <h4 class="fw-bold mb-3 text-info">Sekolah Menengah Pertama</h4>
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalKSN">
+                        <span class="badge bg-primary me-2">Juara 2</span> OSN-P IPS 2021 <small class="text-white-50 ms-2">(Klik untuk sertifikat)</small>
+                    </div>
+                    <div class="achievement-item mb-2">
+                        <span class="badge bg-primary me-2">Juara 3</span> OSN-K Matematika
+                    </div>
+                    <div class="achievement-item mb-4">
+                        <span class="badge bg-secondary me-2">Organisasi</span> Supervisor & Staff Ahli OSIS
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3 text-info">Sekolah Menengah Akhir</h4>
-                <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalLCC">
-                    <span class="badge bg-danger me-2">Juara 2</span> LCC 4 Pilar MPR RI <small class="text-white-50 ms-2">(Klik untuk dokumentasi)</small>
-                </div>
-                <div class="achievement-item mb-2">
-                    <span class="badge bg-danger me-2">Juara 3</span> OSN-K Astronomi
-                </div>
-                <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalBantara">
-                    <span class="badge bg-secondary me-2">Organisasi</span> Staff Ahli Bantara <small class="text-white-50 ms-2">(Klik untuk sertifikat)</small>
-                </div>
-                <div class="achievement-item mb-4">
-                    <span class="badge bg-secondary me-2">Project</span> Plan Organizer PPTA 2023
-                </div>
+                    <hr>
 
-                <hr>
+                    <h4 class="fw-bold mt-4 mb-3 text-info">Sekolah Menengah Akhir</h4>
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalLCC">
+                        <span class="badge bg-danger me-2">Juara 2</span> LCC 4 Pilar MPR RI <small class="text-white-50 ms-2">(Klik untuk dokumentasi)</small>
+                    </div>
+                    <div class="achievement-item mb-2">
+                        <span class="badge bg-danger me-2">Juara 3</span> OSN-K Astronomi
+                    </div>
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalBantara">
+                        <span class="badge bg-secondary me-2">Organisasi</span> Staff Ahli Bantara <small class="text-white-50 ms-2">(Klik untuk sertifikat)</small>
+                    </div>
+                    <div class="achievement-item mb-4">
+                        <span class="badge bg-secondary me-2">Project</span> Plan Organizer PPTA 2023
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3 text-info">Universitas Padjadjaran</h4>
-                <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalRobotik">
-                    <span class="badge bg-warning text-dark me-2">Runner-Up</span> Lomba Robotik TA Line Follower <small class="text-white-50 ms-2">(Klik untuk progress)</small>
-                </div>
-                <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalBeasiswa">
-                    <span class="badge bg-info text-dark me-2">Scholarship</span> Penerima Beasiswa OSC <small class="text-white-50 ms-2">(Lihat sertifikat)</small>
-                </div>
-                <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalUPN">
-                    <span class="badge bg-warning text-dark me-2">Runner-Up</span> Essai Ilmiah UPNV-yk <small class="text-white-50 ms-2">(Klik untuk sertifikat)</small>
-                </div>
-                <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalSolar">
-                    <span class="badge bg-success me-2">Honorable Mention</span> Solar Powered Lighting System <small class="text-white-50 ms-2">(Lihat proyek)</small>
+                    <hr>
+
+                    <h4 class="fw-bold mt-4 mb-3 text-info">Universitas Padjadjaran</h4>
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalRobotik">
+                        <span class="badge bg-warning text-dark me-2">Runner-Up</span> Lomba Robotik TA Line Follower <small class="text-white-50 ms-2">(Klik untuk progress)</small>
+                    </div>
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalBeasiswa">
+                        <span class="badge bg-info text-dark me-2">Scholarship</span> Penerima Beasiswa OSC <small class="text-white-50 ms-2">(Lihat sertifikat)</small>
+                    </div>
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalUPN">
+                        <span class="badge bg-warning text-dark me-2">Runner-Up</span> Essai Ilmiah UPNV-yk <small class="text-white-50 ms-2">(Klik untuk sertifikat)</small>
+                    </div>
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalSolar">
+                        <span class="badge bg-success me-2">Honorable Mention</span> Solar Powered Lighting System <small class="text-white-50 ms-2">(Lihat proyek)</small>
+                    </div>
                 </div>
 
             </div>
@@ -294,30 +348,6 @@
         }
     }
 
-    const piscesPoints = [
-        {x: 0.2, y: 0.3}, {x: 0.25, y: 0.35}, {x: 0.3, y: 0.45}, {x: 0.35, y: 0.6},
-        {x: 0.45, y: 0.75}, {x: 0.6, y: 0.8}, {x: 0.7, y: 0.75}, {x: 0.75, y: 0.65},
-        {x: 0.8, y: 0.5}, {x: 0.85, y: 0.35}, {x: 0.9, y: 0.2}
-    ];
-
-    function drawPisces() {
-        ctx.strokeStyle = 'rgba(0, 210, 255, 0.15)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        piscesPoints.forEach((p, index) => {
-            const x = p.x * canvas.width;
-            const y = p.y * canvas.height;
-            if(index === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-            
-            ctx.fillStyle = 'rgba(0, 210, 255, 0.6)';
-            ctx.beginPath();
-            ctx.arc(x, y, 3, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        ctx.stroke();
-    }
-
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         stars.forEach(s => {
@@ -328,7 +358,6 @@
             s.opacity += s.speed;
             if (s.opacity > 1 || s.opacity < 0) s.speed = -s.speed;
         });
-        drawPisces();
         requestAnimationFrame(animate);
     }
 
