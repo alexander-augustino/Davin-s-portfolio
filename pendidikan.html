@@ -9,14 +9,36 @@
     <style>
         :root { --navy: #1e3c72; --accent-blue: #00d2ff; --navy-dark: #0a0e14; }
         body { background-color: #f8f9fa; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* Intro Loader */
         #intro-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--navy-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.8s ease-out; }
         .circuit-svg { width: 250px; stroke: var(--accent-blue); stroke-width: 2; fill: none; stroke-dasharray: 500; stroke-dashoffset: 500; animation: flow 3s infinite alternate ease-in-out; }
         @keyframes flow { to { stroke-dashoffset: 0; filter: drop-shadow(0 0 15px var(--accent-blue)); } }
+        
+        /* Navigation & Header */
         .navbar { background: var(--navy) !important; padding: 15px 0; }
         .header-section { background: linear-gradient(135deg, var(--navy), #2a5298); color: white; padding: 100px 0; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
+        
+        /* Animations */
         .text-fade-up { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.23, 1, 0.32, 1); }
         .text-fade-up.active { opacity: 1; transform: translateY(0); }
-        .edu-card { background: white; border-radius: 25px; border-left: 8px solid var(--accent-blue); box-shadow: 0 15px 40px rgba(0,0,0,0.05); }
+        
+        /* Education Cards */
+        .edu-card { 
+            background: white; 
+            border-radius: 25px; 
+            border-bottom: 6px solid var(--accent-blue); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .edu-card:hover { transform: translateY(-10px); }
+        .edu-img-container { height: 200px; overflow: hidden; }
+        .edu-img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .edu-card:hover .edu-img-container img { transform: scale(1.1); }
+        .edu-content { padding: 30px; }
+        .edu-year { font-size: 0.9rem; color: var(--accent-blue); font-weight: 600; margin-bottom: 5px; display: block; }
     </style>
 </head>
 <body>
@@ -47,14 +69,42 @@
 </div>
 
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card edu-card p-5 text-fade-up">
-                <div class="fs-5 text-secondary" style="white-space: pre-line; line-height: 1.8;">
-                    Riwayat pendidikan saya selama ini:
-                    1. SMP Yos Sudarso Cigugur
-                    2. SMA Negeri 2 Kuningan
-                    3. Universitas Padjadjaran (Undergraduate - Teknik Elektro)
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4 text-fade-up">
+            <div class="edu-card">
+                <div class="edu-img-container">
+                    <img src="Pendidikan/UNPAD.jpg" alt="Kampus UNPAD">
+                </div>
+                <div class="edu-content">
+                    <span class="edu-year">2025 - Sekarang</span>
+                    <h4 class="fw-bold">Universitas Padjadjaran</h4>
+                    <p class="text-secondary">Undergraduate - Teknik Elektro</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 text-fade-up">
+            <div class="edu-card">
+                <div class="edu-img-container">
+                    <img src="Pendidikan/SMA.jpeg" alt="SMA Negeri 2 Kuningan">
+                </div>
+                <div class="edu-content">
+                    <span class="edu-year">2022 - 2025</span>
+                    <h4 class="fw-bold">SMA Negeri 2 Kuningan</h4>
+                    <p class="text-secondary">Ilmu Pengetahuan Alam (MIPA)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 text-fade-up">
+            <div class="edu-card">
+                <div class="edu-img-container">
+                    <img src="Pendidikan/SMP.jpg" alt="SMP Yos Sudarso">
+                </div>
+                <div class="edu-content">
+                    <span class="edu-year">Lulus 2022</span>
+                    <h4 class="fw-bold">SMP Yos Sudarso Cigugur</h4>
+                    <p class="text-secondary">Cigugur, Kuningan</p>
                 </div>
             </div>
         </div>
@@ -68,7 +118,7 @@
             if (loader) {
                 loader.style.opacity = '0'; loader.style.pointerEvents = 'none';
                 document.querySelectorAll('.text-fade-up').forEach((el, index) => {
-                    setTimeout(() => el.classList.add('active'), 400 + (index * 250));
+                    setTimeout(() => el.classList.add('active'), 400 + (index * 200));
                 });
                 setTimeout(() => loader.style.display = 'none', 800);
             }

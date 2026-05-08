@@ -16,7 +16,7 @@
         .navbar { background: rgba(30, 60, 114, 0.8) !important; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .orbit-wrapper { position: relative; width: clamp(300px, 80vw, 450px); height: clamp(300px, 80vw, 450px); margin: 80px auto; }
         .center-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 130px; height: 130px; background: var(--navy); border: 3px solid var(--accent-blue); border-radius: 50%; z-index: 10; box-shadow: 0 0 30px var(--accent-blue); display: flex; align-items: center; justify-content: center; font-weight: bold; text-align: center; }
-        .node { position: absolute; width: 115px; height: 115px; background: rgba(245, 245, 245, 0.95); backdrop-filter: blur(5px); border: 2px solid var(--accent-blue); border-radius: 50%; color: var(--navy-dark); font-size: 0.85rem; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 5; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease; }
+        .node { position: absolute; width: 115px; height: 115px; background: rgba(245, 245, 245, 0.95); backdrop-filter: blur(5px); border: 2px solid var(--accent-blue); border-radius: 50%; color: var(--navy-dark); font-size: 0.85rem; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 5; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease; border: none; }
         .node:hover { background: var(--white) !important; color: var(--navy) !important; box-shadow: 0 0 35px var(--accent-blue); z-index: 100; }
         .n-top { top: 0; left: 50%; transform: translate(-50%, -50%) scale(1); }
         .n-bottom { top: 100%; left: 50%; transform: translate(-50%, -50%) scale(1); }
@@ -24,6 +24,8 @@
         .n-right { top: 50%; left: 100%; transform: translate(-50%, -50%) scale(1); }
         .n-top:hover, .n-bottom:hover, .n-left:hover, .n-right:hover { transform: translate(-50%, -50%) scale(1.2) !important; }
         #content-box { background: var(--glass); backdrop-filter: blur(15px); border-left: 5px solid var(--accent-blue); border-radius: 20px; max-width: 600px; margin: 40px auto; display: none; color: white; border-top: 1px solid rgba(255,255,255,0.1); }
+        .hobi-link { color: var(--accent-blue); text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .hobi-link:hover { text-decoration: underline; color: #fff; }
     </style>
 </head>
 <body>
@@ -52,13 +54,15 @@
     <div class="orbit-wrapper">
         <div class="center-core">ABOUT<br>DAVIN</div>
         <button class="node n-top" onclick="showContent('Latar Belakang', 'Perkenalkan saya Davin Trianto, Mahasiswa Teknik Elektro Unpad 2025. Lahir 28 Feb 2007 di Kuningan. Suka warna Biru, Ayam Tumis Cabai Hijau, dan aktif dalam filosofi Eksistensialis Kierkegaard. Motto: Aut Viam Inveniam, Aut Faciam.')">Background</button>
-        <button class="node n-bottom" onclick="showContent('Hobi', 'Hobi saya: Problem Solving Kalkulus, Berenang, Main Game RPG, dan Merenung.')">Hobi</button>
+        
+        <button class="node n-bottom" onclick="showHobi()">Hobi</button>
+        
         <button class="node n-left" onclick="window.location.href='pendidikan.html'">Pendidikan</button>
         <button class="node n-right" onclick="window.location.href='achievement.html'">Achievement</button>
     </div>
     <div id="content-box" class="p-5 animate__animated">
         <h4 id="content-title" class="fw-bold" style="color: var(--accent-blue);"></h4>
-        <p id="content-body" class="lead fs-6 mt-3"></p>
+        <div id="content-body" class="lead fs-6 mt-3"></div>
     </div>
 </div>
 
@@ -91,13 +95,27 @@
         requestAnimationFrame(draw);
     }
     init(); draw();
+
+    // Fungsi Umum
     function showContent(title, body) {
         const box = document.getElementById('content-box');
         document.getElementById('content-title').innerText = title;
-        document.getElementById('content-body').innerText = body;
+        document.getElementById('content-body').innerHTML = body; // Pakai innerHTML biar link aktif
         box.style.display = 'block'; box.classList.remove('animate__fadeInUp'); void box.offsetWidth; box.classList.add('animate__fadeInUp');
         box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
+
+    // Fungsi khusus Hobi buat nampilin link
+    function showHobi() {
+        const hobiContent = `
+            Hobi saya meliputi: <br><br>
+            • <b>Problem Solving Kalkulus</b> & Merenung <br>
+            • <a href="hobi-berenang.html" class="hobi-link">Berenang & Main ke Pantai 🌊</a> <br>
+            • <a href="https://act.hoyolab.com/app/community-game-records-sea/rpg/index.html?user_id=181362088#/hsr" target="_blank" class="hobi-link">Main Game RPG (Honkai: Star Rail) 🎮</a>
+        `;
+        showContent('Hobi', hobiContent);
+    }
+
     window.addEventListener('load', () => {
         const loader = document.getElementById('intro-loader');
         setTimeout(() => { if(loader) { loader.style.opacity = '0'; loader.style.pointerEvents = 'none'; setTimeout(() => { loader.style.display = 'none'; }, 800); } }, 1000);

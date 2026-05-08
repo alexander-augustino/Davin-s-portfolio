@@ -6,17 +6,46 @@
     <title>Contact | Alexander Augustino</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root { --navy: #1e3c72; --navy-dark: #0a0e14; --accent-blue: #00d2ff; --white: #ffffff; }
         body { background-color: #f4f7fa; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* Intro Loader - Kembalikan yang lama */
         #intro-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--navy-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s ease-out; }
         .circuit-svg { width: 280px; stroke: var(--accent-blue); stroke-width: 2; fill: none; stroke-dasharray: 500; stroke-dashoffset: 500; animation: flow 3s infinite alternate ease-in-out; }
         @keyframes flow { to { stroke-dashoffset: 0; filter: drop-shadow(0 0 15px var(--accent-blue)); } }
+        
+        /* Nav & Header */
         .navbar { background: var(--navy) !important; padding: 15px 0; }
         .header-section { background: linear-gradient(135deg, var(--navy), #162e58); color: white; padding: 100px 0; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+        
+        /* Animasi Reveal */
         .text-reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.23, 1, 0.32, 1); }
         .text-reveal.active { opacity: 1; transform: translateY(0); }
-        .contact-card { border: none; border-radius: 25px; background: white; box-shadow: 0 15px 40px rgba(0,0,0,0.08); border-left: 8px solid var(--accent-blue); }
+        
+        /* Kartu Kontak Interaktif */
+        .contact-link { 
+            text-decoration: none; 
+            color: #444; 
+            display: flex; 
+            align-items: center; 
+            padding: 25px; 
+            border-radius: 20px; 
+            transition: 0.3s; 
+            background: white; 
+            margin-bottom: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-left: 8px solid var(--accent-blue);
+        }
+        .contact-link:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15); 
+            color: var(--navy);
+        }
+        .icon-wa { color: #25D366; font-size: 2.5rem; margin-right: 25px; }
+        .icon-ig { color: #E4405F; font-size: 2.5rem; margin-right: 25px; }
     </style>
 </head>
 <body>
@@ -42,23 +71,28 @@
 <div class="header-section text-center">
     <div class="container">
         <h1 class="display-3 fw-bold text-reveal">Contact Me</h1>
-        <p class="lead text-reveal">"Setelah Gelap, Terbitlah Terang"</p>
+        <p class="lead text-reveal">"Be Prepared for our EXCITEMENT!!!"</p>
     </div>
 </div>
 
-<div class="container py-5 text-center">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-7">
-            <div class="card contact-card p-5 text-reveal">
-                <div class="card-body">
-                    <div style="white-space: pre-line; line-height: 2.5; font-size: 1.2rem;" class="text-secondary mb-4">
-                        <strong>WhatsApp:</strong> 081320711880
-                        <strong>Instagram:</strong> @alexander_augustino
-
-                        Be Prepared for our EXCITEMENT!!!
-                    </div>
+        <div class="col-lg-6">
+            <a href="https://wa.me/6281320711880" target="_blank" class="contact-link text-reveal">
+                <i class="fa-brands fa-whatsapp icon-wa"></i>
+                <div class="text-start">
+                    <h5 class="mb-0 fw-bold">WhatsApp</h5>
+                    <span class="text-secondary">081320711880</span>
                 </div>
-            </div>
+            </a>
+
+            <a href="https://instagram.com/alexander_augustino" target="_blank" class="contact-link text-reveal">
+                <i class="fa-brands fa-instagram icon-ig"></i>
+                <div class="text-start">
+                    <h5 class="mb-0 fw-bold">Instagram</h5>
+                    <span class="text-secondary">@alexander_augustino</span>
+                </div>
+            </a>
         </div>
     </div>
 </div>
@@ -68,11 +102,15 @@
         const loader = document.getElementById('intro-loader');
         setTimeout(() => {
             if (loader) {
-                loader.style.opacity = '0'; loader.style.pointerEvents = 'none';
+                loader.style.opacity = '0'; 
+                loader.style.pointerEvents = 'none';
+                
+                // Trigger animasi teks satu per satu
                 document.querySelectorAll('.text-reveal').forEach((el, index) => {
-                    setTimeout(() => el.classList.add('active'), 400 + (index * 250));
+                    setTimeout(() => el.classList.add('active'), 400 + (index * 200));
                 });
-                setTimeout(() => loader.style.display = 'none', 800);
+                
+                setTimeout(() => loader.style.display = 'none', 1000);
             }
         }, 1200);
     });
