@@ -87,8 +87,8 @@
                     <div class="achievement-item mb-2">
                         <span class="badge bg-danger me-2">Juara 3</span> OSN-K Astronomi
                     </div>
-                    <div class="achievement-item mb-2">
-                        <span class="badge bg-secondary me-2">Organisasi</span> Staff Ahli Bantara
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalBantara">
+                        <span class="badge bg-secondary me-2">Organisasi</span> Staff Ahli Bantara <small class="text-muted ms-2">(Klik untuk sertifikat)</small>
                     </div>
                     <div class="achievement-item mb-4">
                         <span class="badge bg-secondary me-2">Project</span> Plan Organizer PPTA 2023
@@ -103,14 +103,14 @@
                     <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalBeasiswa">
                         <span class="badge bg-info text-dark me-2">Scholarship</span> Penerima Beasiswa OSC <small class="text-muted ms-2">(Lihat sertifikat)</small>
                     </div>
-                    <div class="achievement-item mb-2">
-                        <span class="badge bg-warning text-dark me-2">Runner-Up</span> Essai Ilmiah UPNV-yk
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalUPN">
+                        <span class="badge bg-warning text-dark me-2">Runner-Up</span> Essai Ilmiah UPNV-yk <small class="text-muted ms-2">(Klik untuk sertifikat)</small>
                     </div>
                     <div class="achievement-item mb-2">
                         <span class="badge bg-secondary me-2">Organisasi</span> Staff BEM Ristek (AI & Machine Learning Focus)
                     </div>
-                    <div class="achievement-item mb-2">
-                        <span class="badge bg-success me-2">Honorable Mention</span> Solar Powered Lighting System
+                    <div class="achievement-item mb-2" data-bs-toggle="modal" data-bs-target="#modalSolar">
+                        <span class="badge bg-success me-2">Honorable Mention</span> Solar Powered Lighting System <small class="text-muted ms-2">(Lihat proyek)</small>
                     </div>
 
                 </div>
@@ -155,6 +155,20 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalBantara" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sertifikat Staff Ahli Bantara</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="Sertifikat/Sertifikat Bantara.png" class="img-fluid" alt="Sertifikat Bantara">
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modalRobotik" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -185,6 +199,42 @@
             </div>
             <div class="modal-body text-center p-0">
                 <img src="Sertifikat/Sertifikat beasiswa OSC.jpeg" class="img-fluid" alt="Beasiswa OSC">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalUPN" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sertifikat Essai Ilmiah UPNV-yk</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="Sertifikat/Terranova Davin UNPVYK.jpeg" class="img-fluid" alt="Sertifikat UPNV">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSolar" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Solar Powered Lighting System Project</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="carouselSolar" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active"><img src="Solar Powered Lighting System/1.jpeg" alt="Solar 1"></div>
+                        <div class="carousel-item"><img src="Solar Powered Lighting System/2.jpeg" alt="Solar 2"></div>
+                        <div class="carousel-item"><img src="Solar Powered Lighting System/3.jpeg" alt="Solar 3"></div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselSolar" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselSolar" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                </div>
             </div>
         </div>
     </div>
