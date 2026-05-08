@@ -8,9 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         :root { 
+            /* Perubahan gradient background agar mirip contoh */
             --navy-dark: #050b18; 
+            --blue-hub: #0a1f42; /* Warna hub biru di tengah */
+            
+            /* Warna sirkuit */
             --accent-blue: #00d2ff; 
-            --trace-color: rgba(0, 210, 255, 0.3);
+            --trace-color-static: rgba(0, 210, 255, 0.08); /* Jalur background redup */
+            --trace-color-animated: rgba(0, 210, 255, 0.4); /* Jalur merambat */
             --trace-glow: #00d2ff;
         }
 
@@ -31,29 +36,47 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at center, #0d1b2a 0%, #050b18 100%);
+            /* Gradient background mirip contoh image_8.png */
+            background: radial-gradient(circle at center, var(--blue-hub) 0%, var(--navy-dark) 100%);
             overflow: hidden;
         }
 
-        .pcb-svg {
+        .pcb-svg-complex {
             position: absolute;
             width: 100%;
             height: 100%;
-            stroke: var(--trace-color);
-            stroke-width: 1.5;
             fill: none;
         }
 
-        /* Circuit Animation - Merambat dari pinggir */
-        .trace-path {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: drawTrace 4s forwards cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(0 0 5px var(--trace-glow));
+        /* Layer 1: Jalur Statis Kompleks (Background Redup) */
+        .static-traces {
+            stroke: var(--trace-color-static);
+            stroke-width: 1;
+        }
+
+        /* Layer 2: Jalur Prosedural yang Merambat (Glow Kuat) */
+        .animated-traces {
+            stroke: var(--trace-color-animated);
+            stroke-width: 1.5;
+            filter: drop-shadow(0 0 12px var(--trace-glow)); /* Boost Glow */
+        }
+
+        /* Animasi Merambat (Procedural Drawing) */
+        .proceduralPath {
+            stroke-dasharray: 1200;
+            stroke-dashoffset: 1200;
+            animation: drawTrace 4.5s forwards cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes drawTrace {
-            to { stroke-dashoffset: 0; stroke: var(--trace-glow); opacity: 0.5; }
+            to { stroke-dashoffset: 0; opacity: 1; }
+        }
+
+        /* Dekorasi Vias (Titik Bintang) */
+        .star-point {
+            fill: var(--accent-blue);
+            filter: drop-shadow(0 0 10px var(--trace-glow));
+            opacity: 0.6;
         }
 
         /* Intro Loader */
@@ -76,7 +99,7 @@
             font-weight: 800; 
             text-shadow: 0 0 20px var(--accent-blue);
             background: linear-gradient(to bottom, #fff, var(--accent-blue));
-            background-clip: text; /* Versi standar untuk menghilangkan warning */
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -131,13 +154,47 @@
 <body>
 
 <div id="pcb-container">
-    <svg class="pcb-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
-        <path class="trace-path" d="M0,200 L150,200 L200,250 L200,400 L300,400 L350,450" />
-        <path class="trace-path" d="M0,800 L100,800 L150,750 L400,750" />
-        <path class="trace-path" d="M1000,300 L850,300 L800,350 L800,500 L700,500" />
-        <path class="trace-path" d="M1000,700 L900,700 L850,750 L600,750" />
-        <circle class="trace-path" cx="350" cy="450" r="4" fill="var(--accent-blue)" />
-        <circle class="trace-path" cx="700" cy="500" r="4" fill="var(--accent-blue)" />
+    <svg class="pcb-svg-complex" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+        
+        <g class="static-traces">
+            <path d="M450,500 L550,500 M500,450 L500,550" />
+            <path d="M470,470 L530,530 M470,530 L530,470" />
+            
+            <path d="M350,200 L400,200 L450,250 L450,450 L400,500 L200,500 L150,550 L150,750" />
+            <path d="M650,200 L600,200 L550,250 L550,450 L600,500 L800,500 L850,550 L850,750" />
+            
+            <path d="M50,150 L50,850 M80,150 L80,850 M110,150 L110,850 M140,150 L140,300 L200,360 L200,640 L140,700 L140,850" />
+            
+            <path d="M950,150 L950,850 M920,150 L920,850 M890,150 L890,850 M860,150 L860,300 L800,360 L800,640 L860,700 L860,850" />
+            
+            <path d="M200,300 L250,300 L300,250 L300,100" />
+            <path d="M800,300 L750,300 L700,250 L700,100" />
+            <path d="M200,700 L250,700 L300,750 L300,900" />
+            <path d="M800,700 L750,700 L700,750 L700,900" />
+        </g>
+        
+        <g class="animated-traces">
+            <path class="proceduralPath" d="M0,200 L150,200 L200,250 L200,400 L300,400 L350,450" />
+            <path class="proceduralPath" d="M0,800 L100,800 L150,750 L400,750" />
+            
+            <path class="proceduralPath" d="M1000,300 L850,300 L800,350 L800,500 L700,500" />
+            <path class="proceduralPath" d="M1000,700 L900,700 L850,750 L600,750" />
+            
+            <path class="proceduralPath" d="M500,0 L500,150 L450,200 L450,400" />
+            <path class="proceduralPath" d="M500,1000 L500,850 L550,800 L550,600" />
+        </g>
+        
+        <g class="vias-decoration">
+            <circle class="star-point" cx="500" cy="500" r="10" stroke="var(--accent-blue)" stroke-width="2" fill="none"/>
+            <circle class="star-point" cx="500" cy="500" r="4" />
+            
+            <circle class="star-point" cx="350" cy="450" r="4" />
+            <circle class="star-point" cx="400" cy="750" r="4" />
+            <circle class="star-point" cx="700" cy="500" r="4" />
+            <circle class="star-point" cx="600" cy="750" r="4" />
+            <circle class="star-point" cx="450" cy="400" r="4" />
+            <circle class="star-point" cx="550" cy="600" r="4" />
+        </g>
     </svg>
 </div>
 
@@ -215,6 +272,7 @@
         
         setTimeout(() => {
             if (loader) {
+                // Sembunyikan loader
                 loader.style.opacity = '0'; 
                 loader.style.pointerEvents = 'none';
                 
