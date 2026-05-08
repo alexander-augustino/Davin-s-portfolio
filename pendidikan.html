@@ -204,15 +204,11 @@
     }
 
     // ── Build PCB trace network ──────────────────────────────
-    // Strategy: walk every grid node; with some probability shoot a trace
-    // horizontally and/or vertically to a neighbour 1-3 cells away.
-    // Traces are strictly axis-aligned L-shapes (horizontal leg + vertical leg),
-    // exactly like a real PCB router.
     function buildNet() {
         net   = [];
         vias  = [];
 
-        const placed = new Set(); // avoid duplicate segments
+        const placed = new Set(); 
 
         function seg(x0,y0,x1,y1,bright) {
             const k = `${x0},${y0},${x1},${y1}`;
@@ -227,30 +223,25 @@
 
         for (let r = 0; r <= rows; r++) {
             for (let c = 0; c <= cols; c++) {
-                if (Math.random() > 0.68) continue; // ~68 % of nodes active
+                if (Math.random() > 0.68) continue; 
 
                 const x0 = c * GRID;
                 const y0 = r * GRID;
                 const bright = Math.random() < 0.22;
 
-                // pick run lengths independently
-                const hLen = (1 + Math.floor(Math.random() * 3)) * GRID; // 1-3 cells
+                const hLen = (1 + Math.floor(Math.random() * 3)) * GRID; 
                 const vLen = (1 + Math.floor(Math.random() * 3)) * GRID;
                 const hDir = Math.random() < 0.5 ? 1 : -1;
                 const vDir = Math.random() < 0.5 ? 1 : -1;
-                const mx   = x0 + hDir * hLen;  // corner of L
+                const mx   = x0 + hDir * hLen;  
                 const y1   = y0 + vDir * vLen;
 
-                // horizontal leg
                 seg(x0, y0, mx, y0, bright);
-                // vertical leg
                 seg(mx, y0, mx, y1, bright);
-                // vias at all three key points
                 via(x0, y0, bright);
                 via(mx, y0, bright);
                 via(mx, y1, bright);
 
-                // occasionally extend with a second L to make longer routes
                 if (Math.random() < 0.30) {
                     const hLen2 = (1 + Math.floor(Math.random() * 2)) * GRID;
                     const x2    = mx + hDir * hLen2;
@@ -260,13 +251,11 @@
             }
         }
 
-        // Extra long horizontal bus lines — give that "data bus" PCB look
         for (let r = 1; r < rows; r += 3 + Math.floor(Math.random()*3)) {
             const y = r * GRID;
             const bright = Math.random() < 0.35;
             seg(0, y, W, y, bright);
         }
-        // Extra long vertical bus lines
         for (let c = 1; c < cols; c += 3 + Math.floor(Math.random()*3)) {
             const x = c * GRID;
             const bright = Math.random() < 0.35;
@@ -283,7 +272,6 @@
             if (s.bright) {
                 ctx.strokeStyle = COL_MID;
                 ctx.lineWidth   = LINE_W_HI;
-                // subtle glow on bright traces
                 ctx.shadowColor = 'rgba(0,210,255,0.35)';
                 ctx.shadowBlur  = 6;
             } else {
@@ -296,16 +284,15 @@
         });
     }
 
-    // ── Draw vias (pads / through-holes) ────────────────────
+    // ── Draw vias ───────────────────────────────────────────
     function drawVias() {
         vias.forEach(v => {
-            // outer ring
             ctx.beginPath();
             ctx.arc(v.x, v.y, v.r + 1.8, 0, Math.PI*2);
             ctx.strokeStyle = v.bright ? 'rgba(0,210,255,0.45)' : 'rgba(0,180,220,0.18)';
             ctx.lineWidth   = 1;
             ctx.stroke();
-            // filled pad
+            
             ctx.beginPath();
             ctx.arc(v.x, v.y, v.r, 0, Math.PI*2);
             ctx.fillStyle = v.bright ? 'rgba(0,200,255,0.55)' : 'rgba(0,170,210,0.20)';
@@ -313,9 +300,11 @@
         });
     }
 
-    // ── Spawn a glow pulse along a random segment ────────────
+    // ── Spawn a glow pulse ───────────────────────────────────
     function spawnPulse() {
-        if (!net.length) return;
+        // BATASAN DITAMBAHKAN DI SINI: Maksimal 100 pulse aktif
+        if (!net.length || pulses.length >= 100) return;
+        
         const s = net[Math.floor(Math.random() * net.length)];
         const fwd = Math.random() < 0.5;
         pulses.push({
@@ -337,10 +326,9 @@
             const t = Math.min(p.t, 1);
             const x = p.x + (p.tx - p.x) * t;
             const y = p.y + (p.ty - p.y) * t;
-            // fade in then out
+            
             const a = t < 0.5 ? t * 2 : (1 - t) * 2;
 
-            // outer glow
             const g = ctx.createRadialGradient(x,y,0, x,y, p.size*5);
             g.addColorStop(0, `rgba(0,230,255,${a * 0.8})`);
             g.addColorStop(1, `rgba(0,180,240,0)`);
@@ -349,7 +337,6 @@
             ctx.fillStyle = g;
             ctx.fill();
 
-            // bright core
             ctx.beginPath();
             ctx.arc(x, y, p.size * 0.65, 0, Math.PI*2);
             ctx.fillStyle = `rgba(255,255,255,${a})`;
@@ -366,9 +353,19 @@
         drawNet();
         drawVias();
 
-        spawnAcc += dt;
-        // spawn every ~55 ms → ~18 pulses/s → lively but not chaotic
-        while (spawnAcc > 55) { spawnPulse(); spawnAcc -= 55; }
+        // PENCEGAH PENUMPUKAN EKSTREM:
+        // Jika dt sangat besar (karena pengguna pindah tab), kita reset spawnAcc
+        if (dt > 1000) {
+            spawnAcc = 0;
+        } else {
+            spawnAcc += dt;
+        }
+        
+        while (spawnAcc > 55) { 
+            spawnPulse(); 
+            spawnAcc -= 55; 
+        }
+        
         drawPulses();
 
         requestAnimationFrame(loop);
