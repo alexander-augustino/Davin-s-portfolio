@@ -7,124 +7,84 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root { 
-            /* Perubahan gradient background agar mirip contoh */
-            --navy-dark: #050b18; 
-            --blue-hub: #0a1f42; /* Warna hub biru di tengah */
-            
-            /* Warna sirkuit */
-            --accent-blue: #00d2ff; 
-            --trace-color-static: rgba(0, 210, 255, 0.08); /* Jalur background redup */
-            --trace-color-animated: rgba(0, 210, 255, 0.4); /* Jalur merambat */
+        :root {
+            --navy-dark: #050b18;
+            --blue-hub: #0a1f42;
+            --accent-blue: #00d2ff;
+            --trace-dim: rgba(0, 180, 230, 0.12);
+            --trace-bright: rgba(0, 210, 255, 0.55);
             --trace-glow: #00d2ff;
         }
 
-        body { 
-            background-color: var(--navy-dark); 
+        body {
+            background-color: var(--navy-dark);
             color: white;
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             margin: 0;
             position: relative;
         }
 
-        /* PCB Background System */
         #pcb-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: -1;
-            /* Gradient background mirip contoh image_8.png */
-            background: radial-gradient(circle at center, var(--blue-hub) 0%, var(--navy-dark) 100%);
+            background: radial-gradient(ellipse at 50% 40%, #0d2a5a 0%, #061228 45%, var(--navy-dark) 100%);
             overflow: hidden;
         }
 
-        .pcb-svg-complex {
+        #pcb-canvas {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            fill: none;
-        }
-
-        /* Layer 1: Jalur Statis Kompleks (Background Redup) */
-        .static-traces {
-            stroke: var(--trace-color-static);
-            stroke-width: 1;
-        }
-
-        /* Layer 2: Jalur Prosedural yang Merambat (Glow Kuat) */
-        .animated-traces {
-            stroke: var(--trace-color-animated);
-            stroke-width: 1.5;
-            filter: drop-shadow(0 0 12px var(--trace-glow)); /* Boost Glow */
-        }
-
-        /* Animasi Merambat (Procedural Drawing) */
-        .proceduralPath {
-            stroke-dasharray: 1200;
-            stroke-dashoffset: 1200;
-            animation: drawTrace 4.5s forwards cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes drawTrace {
-            to { stroke-dashoffset: 0; opacity: 1; }
-        }
-
-        /* Dekorasi Vias (Titik Bintang) */
-        .star-point {
-            fill: var(--accent-blue);
-            filter: drop-shadow(0 0 10px var(--trace-glow));
-            opacity: 0.6;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
         }
 
         /* Intro Loader */
-        #intro-loader { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--navy-dark); z-index: 9999; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            transition: 0.8s ease-out; 
+        #intro-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--navy-dark); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: 0.8s ease-out;
         }
         .circuit-svg-loader { width: 250px; stroke: var(--accent-blue); stroke-width: 2; fill: none; stroke-dasharray: 500; stroke-dashoffset: 500; animation: flow 3s infinite alternate ease-in-out; }
         @keyframes flow { to { stroke-dashoffset: 0; filter: drop-shadow(0 0 15px var(--accent-blue)); } }
 
         /* Navigation */
         .navbar { background: rgba(5, 11, 24, 0.85) !important; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 210, 255, 0.2); }
-        
+
         /* Header Section */
         .header-section { padding: 100px 0 60px; position: relative; }
-        .header-section h1 { 
-            font-size: 3.5rem; 
-            font-weight: 800; 
-            text-shadow: 0 0 20px var(--accent-blue);
-            background: linear-gradient(to bottom, #fff, var(--accent-blue));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .header-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #d0eeff;
+            text-shadow: 0 0 8px rgba(0, 210, 255, 0.25);
+        }
+        .header-section .lead {
+            color: #7ecfea !important;
+            text-shadow: none;
         }
 
-        /* Education Cards with Pop-out Effect */
-        .edu-card { 
-            background: rgba(255, 255, 255, 0.03); 
+        /* Education Cards */
+        .edu-card {
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
-            border-radius: 25px; 
-            border: 1px solid rgba(0, 210, 255, 0.2); 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5); 
+            border-radius: 25px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             height: 100%;
             opacity: 0;
-            transform: scale(0.5); 
+            transform: scale(0.5);
         }
-        
         .edu-card.active {
             opacity: 1;
             transform: scale(1);
         }
-
-        .edu-card:hover { 
-            transform: translateY(-15px) scale(1.03); 
+        .edu-card:hover {
+            transform: translateY(-15px) scale(1.03);
             border-color: var(--accent-blue);
             box-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
         }
@@ -141,11 +101,10 @@
 
         .edu-content { padding: 30px; position: relative; }
         .edu-year { font-size: 0.85rem; color: var(--accent-blue); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-        
+
         .text-fade-up { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
         .text-fade-up.active { opacity: 1; transform: translateY(0); }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--navy-dark); }
         ::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 10px; }
@@ -154,48 +113,7 @@
 <body>
 
 <div id="pcb-container">
-    <svg class="pcb-svg-complex" viewBox="0 0 1000 1000" preserveAspectRatio="none">
-        
-        <g class="static-traces">
-            <path d="M450,500 L550,500 M500,450 L500,550" />
-            <path d="M470,470 L530,530 M470,530 L530,470" />
-            
-            <path d="M350,200 L400,200 L450,250 L450,450 L400,500 L200,500 L150,550 L150,750" />
-            <path d="M650,200 L600,200 L550,250 L550,450 L600,500 L800,500 L850,550 L850,750" />
-            
-            <path d="M50,150 L50,850 M80,150 L80,850 M110,150 L110,850 M140,150 L140,300 L200,360 L200,640 L140,700 L140,850" />
-            
-            <path d="M950,150 L950,850 M920,150 L920,850 M890,150 L890,850 M860,150 L860,300 L800,360 L800,640 L860,700 L860,850" />
-            
-            <path d="M200,300 L250,300 L300,250 L300,100" />
-            <path d="M800,300 L750,300 L700,250 L700,100" />
-            <path d="M200,700 L250,700 L300,750 L300,900" />
-            <path d="M800,700 L750,700 L700,750 L700,900" />
-        </g>
-        
-        <g class="animated-traces">
-            <path class="proceduralPath" d="M0,200 L150,200 L200,250 L200,400 L300,400 L350,450" />
-            <path class="proceduralPath" d="M0,800 L100,800 L150,750 L400,750" />
-            
-            <path class="proceduralPath" d="M1000,300 L850,300 L800,350 L800,500 L700,500" />
-            <path class="proceduralPath" d="M1000,700 L900,700 L850,750 L600,750" />
-            
-            <path class="proceduralPath" d="M500,0 L500,150 L450,200 L450,400" />
-            <path class="proceduralPath" d="M500,1000 L500,850 L550,800 L550,600" />
-        </g>
-        
-        <g class="vias-decoration">
-            <circle class="star-point" cx="500" cy="500" r="10" stroke="var(--accent-blue)" stroke-width="2" fill="none"/>
-            <circle class="star-point" cx="500" cy="500" r="4" />
-            
-            <circle class="star-point" cx="350" cy="450" r="4" />
-            <circle class="star-point" cx="400" cy="750" r="4" />
-            <circle class="star-point" cx="700" cy="500" r="4" />
-            <circle class="star-point" cx="600" cy="750" r="4" />
-            <circle class="star-point" cx="450" cy="400" r="4" />
-            <circle class="star-point" cx="550" cy="600" r="4" />
-        </g>
-    </svg>
+    <canvas id="pcb-canvas"></canvas>
 </div>
 
 <div id="intro-loader">
@@ -267,31 +185,184 @@
 </div>
 
 <script>
-    window.addEventListener('load', () => {
-        const loader = document.getElementById('intro-loader');
-        
-        setTimeout(() => {
-            if (loader) {
-                // Sembunyikan loader
-                loader.style.opacity = '0'; 
-                loader.style.pointerEvents = 'none';
-                
-                // Judul Muncul
-                document.querySelectorAll('.text-fade-up').forEach((el, index) => {
-                    setTimeout(() => el.classList.add('active'), 200 + (index * 200));
-                });
+// ── PCB Canvas Renderer ──────────────────────────────────────────────
+(function () {
+    const canvas = document.getElementById('pcb-canvas');
+    const ctx = canvas.getContext('2d');
+    const GRID = 38;         // grid cell size (px)
+    const TRACE_DIM  = 'rgba(0,180,230,0.10)';
+    const TRACE_MID  = 'rgba(0,210,255,0.28)';
+    const TRACE_GLOW = '#00d2ff';
+    let W, H, cols, rows;
+    let staticPaths = [];
+    let pulses = [];          // animated glowing pulses
 
-                // Kartu Muncul Pop-out
-                document.querySelectorAll('.edu-card').forEach((el, index) => {
-                    setTimeout(() => {
-                        el.classList.add('active');
-                    }, 600 + (index * 300));
-                });
+    // ── Resize ──
+    function resize() {
+        W = canvas.width  = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+        cols = Math.ceil(W / GRID) + 2;
+        rows = Math.ceil(H / GRID) + 2;
+        buildStaticPaths();
+    }
 
-                setTimeout(() => loader.style.display = 'none', 800);
+    // ── Build dense static trace network ──
+    function buildStaticPaths() {
+        staticPaths = [];
+        // Walk the grid, randomly connect neighbours with L-shaped traces
+        const visited = new Set();
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                if (Math.random() > 0.52) continue; // density control
+                const x0 = c * GRID;
+                const y0 = r * GRID;
+                // pick a direction: right or down, or diagonal L
+                const dirs = [[1,0],[0,1],[2,0],[0,2],[1,1]];
+                const [dc, dr] = dirs[Math.floor(Math.random()*dirs.length)];
+                const x1 = x0 + dc * GRID;
+                const y1 = y0 + dr * GRID;
+                if (x1 > W + GRID || y1 > H + GRID) continue;
+
+                // L-shaped: go horizontal first, then vertical
+                const segs = [];
+                if (Math.random() < 0.5) {
+                    segs.push([x0,y0, x1,y0]);  // horizontal
+                    segs.push([x1,y0, x1,y1]);  // vertical
+                } else {
+                    segs.push([x0,y0, x0,y1]);  // vertical
+                    segs.push([x0,y1, x1,y1]);  // horizontal
+                }
+                staticPaths.push({ segs, bright: Math.random() < 0.18 });
+
+                // vias at endpoints
+                staticPaths.push({ via: { x: x0, y: y0 } });
+                staticPaths.push({ via: { x: x1, y: y1 } });
             }
-        }, 1500);
-    });
+        }
+    }
+
+    // ── Draw static layer ──
+    function drawStatic() {
+        staticPaths.forEach(p => {
+            if (p.via) {
+                // small pad circle
+                ctx.beginPath();
+                ctx.arc(p.via.x, p.via.y, 2.2, 0, Math.PI*2);
+                ctx.fillStyle = p.bright ? TRACE_MID : TRACE_DIM;
+                ctx.fill();
+                return;
+            }
+            ctx.strokeStyle = p.bright ? TRACE_MID : TRACE_DIM;
+            ctx.lineWidth   = p.bright ? 1.4 : 0.9;
+            p.segs.forEach(([x0,y0,x1,y1]) => {
+                ctx.beginPath();
+                ctx.moveTo(x0, y0);
+                ctx.lineTo(x1, y1);
+                ctx.stroke();
+            });
+        });
+    }
+
+    // ── Spawn animated pulses along random paths ──
+    function spawnPulse() {
+        // pick a random static path that has segments
+        const candidates = staticPaths.filter(p => p.segs && p.segs.length);
+        if (!candidates.length) return;
+        const path = candidates[Math.floor(Math.random() * candidates.length)];
+        const seg = path.segs[0];
+        pulses.push({
+            x: seg[0], y: seg[1],
+            tx: seg[2], ty: seg[3],
+            progress: 0,
+            speed: 0.012 + Math.random() * 0.018,
+            alpha: 0.7 + Math.random() * 0.3,
+            radius: 2 + Math.random() * 2
+        });
+    }
+
+    // ── Draw & update pulses ──
+    function drawPulses(dt) {
+        pulses = pulses.filter(p => p.progress <= 1);
+        pulses.forEach(p => {
+            p.progress += p.speed;
+            const t = Math.min(p.progress, 1);
+            const x = p.x + (p.tx - p.x) * t;
+            const y = p.y + (p.ty - p.y) * t;
+            const a = p.alpha * (1 - t);  // fade out as it travels
+
+            // glow dot
+            const grad = ctx.createRadialGradient(x,y,0, x,y, p.radius*4);
+            grad.addColorStop(0, `rgba(0,230,255,${a})`);
+            grad.addColorStop(1, `rgba(0,180,230,0)`);
+            ctx.beginPath();
+            ctx.arc(x, y, p.radius*4, 0, Math.PI*2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // bright core
+            ctx.beginPath();
+            ctx.arc(x, y, p.radius * 0.7, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(255,255,255,${a * 0.9})`;
+            ctx.fill();
+        });
+    }
+
+    // ── Glowing hub rings in center ──
+    function drawHub(t) {
+        const cx = W/2, cy = H * 0.38;
+        [60, 100, 145].forEach((r, i) => {
+            const a = 0.06 + 0.04 * Math.sin(t/1200 + i);
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI*2);
+            ctx.strokeStyle = `rgba(0,210,255,${a})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        });
+        // centre cross
+        ctx.strokeStyle = 'rgba(0,210,255,0.18)';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(cx-160, cy); ctx.lineTo(cx+160, cy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx, cy-130); ctx.lineTo(cx, cy+130); ctx.stroke();
+    }
+
+    // ── Main loop ──
+    let last = 0, spawnTimer = 0;
+    function loop(ts) {
+        const dt = ts - last; last = ts;
+        ctx.clearRect(0, 0, W, H);
+        drawStatic();
+        drawHub(ts);
+
+        spawnTimer += dt;
+        if (spawnTimer > 80) { spawnPulse(); spawnTimer = 0; }
+        drawPulses(dt);
+
+        requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(loop);
+})();
+
+// ── Page load sequence ──
+window.addEventListener('load', () => {
+    const loader = document.getElementById('intro-loader');
+    setTimeout(() => {
+        if (loader) {
+            loader.style.opacity = '0';
+            loader.style.pointerEvents = 'none';
+
+            document.querySelectorAll('.text-fade-up').forEach((el, i) => {
+                setTimeout(() => el.classList.add('active'), 200 + i * 200);
+            });
+            document.querySelectorAll('.edu-card').forEach((el, i) => {
+                setTimeout(() => el.classList.add('active'), 600 + i * 300);
+            });
+            setTimeout(() => loader.style.display = 'none', 800);
+        }
+    }, 1500);
+});
 </script>
 </body>
 </html>
