@@ -10,11 +10,11 @@
     
     <style>
         :root { 
-            --navy: #1e3c72; 
+            --navy: #0a192f; 
             --navy-dark: #020406; 
             --accent-blue: #00d2ff; 
-            --bh-orange: #ff8c00;
-            --bh-red: #ff4500;
+            --glow-blue: rgba(0, 210, 255, 0.6);
+            --deep-blue: #0072ff;
             --white: #ffffff; 
         }
 
@@ -26,7 +26,7 @@
             perspective: 1200px;
         }
         
-        /* Intro Loader - Sesuai Request */
+        /* Intro Loader */
         #intro-loader { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: var(--navy-dark); z-index: 9999; 
@@ -53,17 +53,17 @@
             background: rgba(2, 4, 6, 0.7) !important; 
             backdrop-filter: blur(15px);
             padding: 15px 0; 
-            border-bottom: 1px solid rgba(255, 140, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 210, 255, 0.1);
         }
         
-        /* Header & Blackhole Core */
+        /* Header Section - Padding disesuaikan agar tombol naik */
         .header-section { 
             position: relative;
-            padding: 180px 0 120px 0; 
+            padding: 160px 0 60px 0; 
             overflow: visible;
         }
 
-        /* Blackhole Visual Manipulation */
+        /* Blackhole Visual - Small Core with Accretion Trail */
         .singularity-container {
             position: absolute;
             top: 50%;
@@ -79,35 +79,48 @@
 
         .bh-disk {
             position: absolute;
-            width: 450px; /* Ukuran diperbesar sesuai teks */
-            height: 450px;
-            background: radial-gradient(circle, #000 30%, transparent 70%);
+            width: 120px; /* Inti diperkecil */
+            height: 120px;
+            background: #000;
             border-radius: 50%;
             box-shadow: 
-                0 0 40px 10px #000,
-                0 0 100px 20px var(--bh-red),
-                0 0 150px 40px rgba(255, 140, 0, 0.4);
-            animation: rotate-disk 10s linear infinite;
+                0 0 30px 5px #000,
+                0 0 60px 10px var(--deep-blue),
+                0 0 100px 20px var(--glow-blue);
+            z-index: 2;
         }
 
-        /* Efek Cakram Spiral (Bolder & Real) */
-        .bh-disk::after {
-            content: '';
+        /* Trail Cakram Akresi Biru (Thin & Glowing) */
+        .accretion-trail {
             position: absolute;
-            top: -10%; left: -10%; right: -10%; bottom: -10%;
+            width: 450px;
+            height: 450px;
             border-radius: 50%;
-            background: radial-gradient(ellipse at center, transparent 40%, var(--bh-orange) 50%, transparent 65%);
-            filter: blur(15px);
-            opacity: 0.7;
-            transform: rotateX(60deg); /* Membuat cakram terlihat pipih/realistik */
+            background: radial-gradient(circle, transparent 45%, var(--accent-blue) 49%, transparent 55%);
+            filter: blur(12px);
+            opacity: 0.5;
+            animation: rotate-trail 8s linear infinite;
+            transform: rotateX(75deg); /* Membuat kesan cakram pipih */
         }
 
-        @keyframes rotate-disk {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .accretion-trail-inner {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, transparent 40%, var(--deep-blue) 50%, transparent 60%);
+            filter: blur(8px);
+            opacity: 0.6;
+            animation: rotate-trail 5s linear infinite reverse;
+            transform: rotateX(75deg);
         }
 
-        /* GFX Manipulation: Elemen tertarik */
+        @keyframes rotate-trail {
+            from { transform: rotateX(75deg) rotate(0deg); }
+            to { transform: rotateX(75deg) rotate(360deg); }
+        }
+
+        /* GFX Manipulation */
         .attraction-zone { transform-style: preserve-3d; }
         
         .text-reveal { 
@@ -117,29 +130,29 @@
         }
         .text-reveal.active { 
             opacity: 1; 
-            transform: translateY(0) translateZ(80px); /* Terasa lebih keluar */
+            transform: translateY(0) translateZ(80px); 
         }
         
-        /* Kartu Kontak */
+        /* Kartu Kontak - Tema Biru */
         .contact-link { 
             text-decoration: none; color: #fff; display: flex; align-items: center; 
-            padding: 25px; border-radius: 24px; 
+            padding: 22px; border-radius: 24px; 
             transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             background: rgba(255, 255, 255, 0.03); 
-            margin-bottom: 25px; 
-            border: 1px solid rgba(255, 140, 0, 0.1);
-            backdrop-filter: blur(8px);
+            margin-bottom: 20px; 
+            border: 1px solid rgba(0, 210, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .contact-link:hover { 
             transform: scale(1.05) translateZ(50px); 
-            background: rgba(255, 140, 0, 0.1);
-            box-shadow: 0 0 50px rgba(255, 69, 0, 0.2); 
-            border-color: var(--bh-orange);
+            background: rgba(0, 210, 255, 0.1);
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2); 
+            border-color: var(--accent-blue);
         }
 
-        .icon-wa { color: #25D366; font-size: 2.5rem; margin-right: 25px; }
-        .icon-ig { color: #E4405F; font-size: 2.5rem; margin-right: 25px; }
+        .icon-wa { color: #25D366; font-size: 2.2rem; margin-right: 20px; }
+        .icon-ig { color: #E4405F; font-size: 2.2rem; margin-right: 20px; }
 
         .vignette-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -154,7 +167,7 @@
 
 <div id="intro-loader">
     <svg class="circuit-svg" viewBox="0 0 100 100"><path d="M0,50 L30,50 L40,20 L60,80 L70,50 L100,50" /></svg>
-    <div style="color: white; margin-top: 20px; font-family: 'Courier New'; letter-spacing: 3px;">ESTABLISHING CONNECTION...</div>
+    <div style="color: var(--accent-blue); margin-top: 20px; font-family: 'Courier New'; letter-spacing: 3px;">ESTABLISHING CONNECTION...</div>
 </div>
 
 <canvas id="blackhole-canvas"></canvas>
@@ -167,30 +180,32 @@
             <a class="nav-link" href="about.html">About</a>
             <a class="nav-link" href="achievement.html">Achievement</a>
             <a class="nav-link" href="pendidikan.html">Pendidikan</a>
-            <a class="nav-link active" href="contact.html" style="color: var(--bh-orange) !important; font-weight: bold;">Contact</a>
+            <a class="nav-link active" href="contact.html" style="color: var(--accent-blue) !important; font-weight: bold; text-shadow: 0 0 10px var(--glow-blue);">Contact</a>
         </div>
     </div>
 </nav>
 
 <div class="header-section text-center attraction-zone">
     <div class="singularity-container">
+        <div class="accretion-trail"></div>
+        <div class="accretion-trail-inner"></div>
         <div class="bh-disk" id="bh-core"></div>
     </div>
     
     <div class="container">
-        <h1 class="display-3 fw-bold text-reveal" style="text-shadow: 0 0 30px rgba(255,140,0,0.6); color: #fff;">Contact Me</h1>
-        <p class="lead text-reveal" style="letter-spacing: 3px; color: #ffa500;">"Be Prepared for our EXCITEMENT!!!"</p>
+        <h1 class="display-3 fw-bold text-reveal" style="text-shadow: 0 0 25px var(--glow-blue); color: #fff;">Contact Me</h1>
+        <p class="lead text-reveal" style="letter-spacing: 3px; color: var(--accent-blue); text-shadow: 0 0 10px var(--glow-blue);">"Be Prepared for our EXCITEMENT!!!"</p>
     </div>
 </div>
 
-<div class="container py-5 attraction-zone" style="position: relative; z-index: 2;">
+<div class="container py-4 attraction-zone" style="position: relative; z-index: 2;">
     <div class="row justify-content-center">
-        <div class="col-lg-6">
+        <div class="col-lg-5">
             <a href="https://wa.me/6281320711880" target="_blank" class="contact-link text-reveal">
                 <i class="fa-brands fa-whatsapp icon-wa"></i>
                 <div class="text-start">
                     <h5 class="mb-0 fw-bold">WhatsApp</h5>
-                    <span style="color: #aaa;">081320711880</span>
+                    <span style="color: #ccc; font-size: 0.9rem;">081320711880</span>
                 </div>
             </a>
 
@@ -198,7 +213,7 @@
                 <i class="fa-brands fa-instagram icon-ig"></i>
                 <div class="text-start">
                     <h5 class="mb-0 fw-bold">Instagram</h5>
-                    <span style="color: #aaa;">@alexander_augustino</span>
+                    <span style="color: #ccc; font-size: 0.9rem;">@alexander_augustino</span>
                 </div>
             </a>
         </div>
@@ -216,7 +231,7 @@
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
         particles = [];
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 150; i++) {
             particles.push(new Particle());
         }
     }
@@ -228,16 +243,16 @@
 
         reset() {
             const angle = Math.random() * Math.PI * 2;
-            const dist = Math.max(width, height) * (Math.random() * 0.8 + 0.2);
+            const dist = Math.max(width, height) * (Math.random() * 0.7 + 0.3);
             this.x = width / 2 + Math.cos(angle) * dist;
             this.y = height / 2 + Math.sin(angle) * dist;
-            this.size = Math.random() * 2 + 0.5;
-            this.speed = Math.random() * 3 + 1;
-            this.color = Math.random() > 0.5 ? '#ff8c00' : '#ffffff';
+            this.size = Math.random() * 1.5 + 0.5;
+            this.speed = Math.random() * 2 + 1;
+            // Partikel sekarang Biru & Putih
+            this.color = Math.random() > 0.4 ? '#00d2ff' : '#ffffff';
         }
 
         update() {
-            // REVISI 3: Target fokus ke koordinat Blackhole (Header)
             const rect = bhCore.getBoundingClientRect();
             const targetX = rect.left + rect.width / 2;
             const targetY = rect.top + rect.height / 2;
@@ -246,10 +261,10 @@
             const dy = targetY - this.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < 30) {
+            if (distance < 20) {
                 this.reset();
             } else {
-                const force = Math.min(12, 800 / distance);
+                const force = Math.min(10, 600 / distance);
                 this.x += (dx / distance) * force * this.speed;
                 this.y += (dy / distance) * force * this.speed;
             }
@@ -264,7 +279,7 @@
     }
 
     function animate() {
-        ctx.fillStyle = 'rgba(2, 4, 6, 0.15)';
+        ctx.fillStyle = 'rgba(2, 4, 6, 0.2)';
         ctx.fillRect(0, 0, width, height);
         particles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animate);
@@ -281,11 +296,11 @@
                 loader.style.opacity = '0'; 
                 loader.style.pointerEvents = 'none';
                 document.querySelectorAll('.text-reveal').forEach((el, index) => {
-                    setTimeout(() => el.classList.add('active'), 400 + (index * 200));
+                    setTimeout(() => el.classList.add('active'), 300 + (index * 150));
                 });
                 setTimeout(() => loader.style.display = 'none', 1000);
             }
-        }, 1200);
+        }, 1000);
     });
 </script>
 </body>
