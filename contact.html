@@ -26,7 +26,6 @@
             perspective: 1200px;
         }
         
-        /* FIX REVISI 1: Font Loading Screen */
         #intro-loader { 
             position: fixed; 
             top: 0; 
@@ -47,7 +46,7 @@
             margin-top: 25px; 
             font-family: 'Courier New', Courier, monospace; 
             letter-spacing: 4px; 
-            font-weight: normal; /* Tidak Bold sesuai revisi */
+            font-weight: normal; 
             font-size: 0.9rem;
             opacity: 0.8;
         }
@@ -79,27 +78,6 @@
             position: relative;
             padding: 220px 0 100px 0; 
             overflow: visible;
-        }
-
-        /* REVISI 2 & 3: Posisi Blackhole di belakang Judul */
-        .singularity-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .bh-disk {
-            width: 80px; /* Ukuran dikecilkan sedikit */
-            height: 80px;
-            background: #000;
-            border-radius: 50%;
-            box-shadow: 
-                0 0 30px 5px #000,
-                0 0 60px 15px var(--deep-blue),
-                0 0 100px 25px var(--glow-blue);
         }
 
         .text-reveal { 
@@ -165,10 +143,6 @@
 </nav>
 
 <div class="header-section text-center" id="header-trigger">
-    <div class="singularity-container">
-        <div class="bh-disk" id="bh-core"></div>
-    </div>
-    
     <div class="container">
         <h1 class="display-3 fw-bold text-reveal" id="main-title">Contact Me</h1>
         <p class="lead text-reveal" style="letter-spacing: 3px; color: var(--accent-blue);">"Be Prepared for our EXCITEMENT!!!"</p>
@@ -210,7 +184,6 @@
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
         
-        // REVISI: Mengambil posisi rect judul "Contact Me" secara real-time
         const rect = mainTitle.getBoundingClientRect();
         centerX = rect.left + rect.width / 2;
         centerY = rect.top + rect.height / 2;
@@ -219,16 +192,8 @@
     function initParticles() {
         backgroundParticles = [];
         diskParticles = [];
-
-        // Partikel luar yang tersedot
-        for (let i = 0; i < 200; i++) {
-            backgroundParticles.push(new LinearParticle());
-        }
-
-        // Partikel cakram akresi (Disk)
-        for (let i = 0; i < 500; i++) {
-            diskParticles.push(new AccretionParticle());
-        }
+        for (let i = 0; i < 200; i++) backgroundParticles.push(new LinearParticle());
+        for (let i = 0; i < 500; i++) diskParticles.push(new AccretionParticle());
     }
 
     class LinearParticle {
@@ -244,11 +209,9 @@
             let dx = centerX - this.x;
             let dy = centerY - this.y;
             let dist = Math.sqrt(dx*dx + dy*dy);
-            
             this.x += (dx / dist) * this.speed;
             this.y += (dy / dist) * this.speed;
-
-            if (dist < 30) this.reset();
+            if (dist < 40) this.reset();
         }
         draw() {
             ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
@@ -262,49 +225,78 @@
         constructor() { this.reset(); }
         reset() {
             this.angle = Math.random() * Math.PI * 2;
-            this.radius = 60 + Math.random() * 120; // Disesuaikan dengan ukuran teks
-            this.angularSpeed = (0.02 + Math.random() * 0.03);
+            this.radius = 80 + Math.random() * 150; 
+            this.angularSpeed = (0.015 + Math.random() * 0.025);
             this.history = [];
-            this.historyLimit = 15 + Math.random() * 15;
+            this.historyLimit = 10 + Math.random() * 15;
             this.color = Math.random() > 0.5 ? '#00d2ff' : '#0072ff';
         }
-
         update() {
             this.angle += this.angularSpeed;
-            this.radius -= 0.2; // Bergerak masuk perlahan
-
+            this.radius -= 0.15;
             let x = centerX + Math.cos(this.angle) * this.radius;
             let y = centerY + Math.sin(this.angle) * this.radius;
-
             this.history.push({x, y});
             if (this.history.length > this.historyLimit) this.history.shift();
-
-            if (this.radius < 30) this.reset();
+            if (this.radius < 40) this.reset();
         }
-
         draw() {
             if (this.history.length < 2) return;
             ctx.beginPath();
             ctx.strokeStyle = this.color;
-            ctx.lineWidth = 0.8;
-            ctx.globalAlpha = 0.4;
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.3;
             ctx.moveTo(this.history[0].x, this.history[0].y);
-            for (let i = 1; i < this.history.length; i++) {
-                ctx.lineTo(this.history[i].x, this.history[i].y);
-            }
+            for (let i = 1; i < this.history.length; i++) ctx.lineTo(this.history[i].x, this.history[i].y);
             ctx.stroke();
             ctx.globalAlpha = 1.0;
         }
     }
 
+    // FUNGSI BARU: Menggambar Singularity (Core & Glow) di Canvas
+    function drawBlackholeCore() {
+        ctx.save();
+        
+        // 1. Outer Glow (Large Deep Blue)
+        let gradientOuter = ctx.createRadialGradient(centerX, centerY, 40, centerX, centerY, 120);
+        gradientOuter.addColorStop(0, 'rgba(0, 114, 255, 0.4)');
+        gradientOuter.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradientOuter;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 120, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 2. Inner Glow (Bright Cyan)
+        let gradientInner = ctx.createRadialGradient(centerX, centerY, 30, centerX, centerY, 70);
+        gradientInner.addColorStop(0, 'rgba(0, 210, 255, 0.6)');
+        gradientInner.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradientInner;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 70, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 3. Singularity (The Black Hole)
+        ctx.fillStyle = '#000';
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = '#000';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 40, 0, Math.PI * 2); // Ukuran core pas di "Contact Me"
+        ctx.fill();
+        
+        ctx.restore();
+    }
+
     function animate() {
-        // Update center setiap frame agar posisi partikel ikut saat scroll
+        // Track posisi judul setiap frame
         const rect = mainTitle.getBoundingClientRect();
         centerX = rect.left + rect.width / 2;
         centerY = rect.top + rect.height / 2;
 
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
         ctx.fillRect(0, 0, width, height);
+
+        // Gambar core tepat di titik pusat gerakan
+        drawBlackholeCore();
 
         ctx.globalCompositeOperation = 'lighter';
         backgroundParticles.forEach(p => { p.update(); p.draw(); });
