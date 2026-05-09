@@ -26,7 +26,7 @@
             perspective: 1200px;
         }
         
-        /* FIX REVISI: Full Page Loader */
+        /* FIX REVISI 1: Font Loading Screen */
         #intro-loader { 
             position: fixed; 
             top: 0; 
@@ -42,12 +42,22 @@
             transition: opacity 0.8s ease-in-out; 
         }
 
+        .loader-text {
+            color: white; 
+            margin-top: 25px; 
+            font-family: 'Courier New', Courier, monospace; 
+            letter-spacing: 4px; 
+            font-weight: normal; /* Tidak Bold sesuai revisi */
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
         .circuit-svg { 
-            width: 280px; stroke: var(--accent-blue); stroke-width: 2; fill: none; 
+            width: 250px; stroke: var(--accent-blue); stroke-width: 1.5; fill: none; 
             stroke-dasharray: 500; stroke-dashoffset: 500; 
             animation: flow 3s infinite alternate ease-in-out; 
         }
-        @keyframes flow { to { stroke-dashoffset: 0; filter: drop-shadow(0 0 15px var(--accent-blue)); } }
+        @keyframes flow { to { stroke-dashoffset: 0; filter: drop-shadow(0 0 10px var(--accent-blue)); } }
         
         #blackhole-canvas {
             position: fixed;
@@ -67,38 +77,37 @@
         
         .header-section { 
             position: relative;
-            padding: 180px 0 60px 0; 
+            padding: 220px 0 100px 0; 
             overflow: visible;
         }
 
-        /* Singularity Core */
+        /* REVISI 2 & 3: Posisi Blackhole di belakang Judul */
         .singularity-container {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: -1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            pointer-events: none;
         }
 
         .bh-disk {
-            width: 120px;
-            height: 120px;
+            width: 80px; /* Ukuran dikecilkan sedikit */
+            height: 80px;
             background: #000;
             border-radius: 50%;
             box-shadow: 
-                0 0 40px 10px #000,
-                0 0 70px 20px var(--deep-blue),
-                0 0 120px 30px var(--glow-blue);
-            z-index: 10;
+                0 0 30px 5px #000,
+                0 0 60px 15px var(--deep-blue),
+                0 0 100px 25px var(--glow-blue);
         }
 
         .text-reveal { 
             opacity: 0; 
             transform: translateY(30px); 
             transition: all 1s ease-out; 
+            position: relative;
+            z-index: 5;
         }
         .text-reveal.active { 
             opacity: 1; 
@@ -127,7 +136,7 @@
 
         .vignette-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.8) 100%);
+            background: radial-gradient(circle at center, transparent 10%, rgba(0,0,0,0.8) 100%);
             pointer-events: none; z-index: 1;
         }
     </style>
@@ -136,7 +145,7 @@
 
 <div id="intro-loader">
     <svg class="circuit-svg" viewBox="0 0 100 100"><path d="M0,50 L30,50 L40,20 L60,80 L70,50 L100,50" /></svg>
-    <div style="color: white; margin-top: 20px; font-family: 'Courier New'; letter-spacing: 3px; font-weight: bold;">ESTABLISHING CONNECTION...</div>
+    <div class="loader-text">ESTABLISHING CONNECTION...</div>
 </div>
 
 <div class="vignette-overlay"></div>
@@ -155,13 +164,13 @@
     </div>
 </nav>
 
-<div class="header-section text-center">
+<div class="header-section text-center" id="header-trigger">
     <div class="singularity-container">
         <div class="bh-disk" id="bh-core"></div>
     </div>
     
     <div class="container">
-        <h1 class="display-3 fw-bold text-reveal">Contact Me</h1>
+        <h1 class="display-3 fw-bold text-reveal" id="main-title">Contact Me</h1>
         <p class="lead text-reveal" style="letter-spacing: 3px; color: var(--accent-blue);">"Be Prepared for our EXCITEMENT!!!"</p>
     </div>
 </div>
@@ -191,27 +200,33 @@
 <script>
     const canvas = document.getElementById('blackhole-canvas');
     const ctx = canvas.getContext('2d');
+    const mainTitle = document.getElementById('main-title');
     let width, height, centerX, centerY;
     
     let backgroundParticles = [];
     let diskParticles = [];
 
-    function initCanvas() {
+    function updateCenters() {
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
-        centerX = width / 2;
-        centerY = height / 2;
         
+        // REVISI: Mengambil posisi rect judul "Contact Me" secara real-time
+        const rect = mainTitle.getBoundingClientRect();
+        centerX = rect.left + rect.width / 2;
+        centerY = rect.top + rect.height / 2;
+    }
+
+    function initParticles() {
         backgroundParticles = [];
         diskParticles = [];
 
-        // REVISI: Partikel Background ditambah biar ramai (250 partikel)
-        for (let i = 0; i < 250; i++) {
+        // Partikel luar yang tersedot
+        for (let i = 0; i < 200; i++) {
             backgroundParticles.push(new LinearParticle());
         }
 
-        // REVISI: Partikel Cakram ditambah (600 partikel benang)
-        for (let i = 0; i < 600; i++) {
+        // Partikel cakram akresi (Disk)
+        for (let i = 0; i < 500; i++) {
             diskParticles.push(new AccretionParticle());
         }
     }
@@ -221,20 +236,19 @@
         reset() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
-            this.size = Math.random() * 1.5;
-            this.speed = Math.random() * 3 + 1;
-            this.opacity = Math.random() * 0.5 + 0.2;
+            this.size = Math.random() * 1.2;
+            this.speed = Math.random() * 2 + 1;
+            this.opacity = Math.random() * 0.5;
         }
         update() {
             let dx = centerX - this.x;
             let dy = centerY - this.y;
             let dist = Math.sqrt(dx*dx + dy*dy);
             
-            // Gerak lurus ke pusat (lebih akurat)
             this.x += (dx / dist) * this.speed;
             this.y += (dy / dist) * this.speed;
 
-            if (dist < 40) this.reset();
+            if (dist < 30) this.reset();
         }
         draw() {
             ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
@@ -248,42 +262,32 @@
         constructor() { this.reset(); }
         reset() {
             this.angle = Math.random() * Math.PI * 2;
-            // Radius dimulai dari luar blackhole
-            this.radius = 100 + Math.random() * 200; 
-            this.angularSpeed = (Math.random() * 0.05 + 0.02) * (150 / this.radius);
-            
+            this.radius = 60 + Math.random() * 120; // Disesuaikan dengan ukuran teks
+            this.angularSpeed = (0.02 + Math.random() * 0.03);
             this.history = [];
-            this.historyLimit = 20 + Math.random() * 25; 
+            this.historyLimit = 15 + Math.random() * 15;
             this.color = Math.random() > 0.5 ? '#00d2ff' : '#0072ff';
-            this.chaosOffset = Math.random() * 1000;
         }
 
         update() {
-            // Chaos fluktuasi orbit
-            let chaos = Math.sin(Date.now() * 0.003 + this.chaosOffset) * 4;
-            
             this.angle += this.angularSpeed;
-            this.radius -= 0.4; // Lebih cepat tersedot
+            this.radius -= 0.2; // Bergerak masuk perlahan
 
-            let x = centerX + Math.cos(this.angle) * (this.radius + chaos);
-            let y = centerY + Math.sin(this.angle) * (this.radius + chaos);
+            let x = centerX + Math.cos(this.angle) * this.radius;
+            let y = centerY + Math.sin(this.angle) * this.radius;
 
             this.history.push({x, y});
             if (this.history.length > this.historyLimit) this.history.shift();
 
-            // Reset kalau sudah masuk ke event horizon
-            if (this.radius < 50) this.reset();
+            if (this.radius < 30) this.reset();
         }
 
         draw() {
             if (this.history.length < 2) return;
-            
             ctx.beginPath();
             ctx.strokeStyle = this.color;
-            ctx.lineWidth = 1;
-            ctx.lineCap = 'round';
-            ctx.globalAlpha = 0.5;
-            
+            ctx.lineWidth = 0.8;
+            ctx.globalAlpha = 0.4;
             ctx.moveTo(this.history[0].x, this.history[0].y);
             for (let i = 1; i < this.history.length; i++) {
                 ctx.lineTo(this.history[i].x, this.history[i].y);
@@ -294,7 +298,12 @@
     }
 
     function animate() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        // Update center setiap frame agar posisi partikel ikut saat scroll
+        const rect = mainTitle.getBoundingClientRect();
+        centerX = rect.left + rect.width / 2;
+        centerY = rect.top + rect.height / 2;
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
         ctx.fillRect(0, 0, width, height);
 
         ctx.globalCompositeOperation = 'lighter';
@@ -305,8 +314,14 @@
         requestAnimationFrame(animate);
     }
 
-    window.addEventListener('resize', initCanvas);
-    initCanvas();
+    window.addEventListener('resize', () => {
+        updateCenters();
+        initParticles();
+    });
+
+    // Inisialisasi awal
+    updateCenters();
+    initParticles();
     animate();
 
     window.addEventListener('load', () => {
