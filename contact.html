@@ -9,51 +9,144 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --navy: #1e3c72; --navy-dark: #0a0e14; --accent-blue: #00d2ff; --white: #ffffff; }
-        body { background-color: #f4f7fa; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        :root { 
+            --navy: #1e3c72; 
+            --navy-dark: #05080a; /* Lebih gelap untuk efek blackhole */
+            --accent-blue: #00d2ff; 
+            --white: #ffffff; 
+            --event-horizon: rgba(0, 210, 255, 0.3);
+        }
+
+        body { 
+            background-color: var(--navy-dark); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            color: white;
+            perspective: 1000px; /* Memberikan efek 3D pada elemen yang tertarik */
+        }
         
-        /* Intro Loader - Kembalikan yang lama */
-        #intro-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--navy-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s ease-out; }
-        .circuit-svg { width: 280px; stroke: var(--accent-blue); stroke-width: 2; fill: none; stroke-dasharray: 500; stroke-dashoffset: 500; animation: flow 3s infinite alternate ease-in-out; }
+        /* Intro Loader - Tetap sesuai request */
+        #intro-loader { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--navy-dark); z-index: 9999; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            transition: opacity 1s ease-out; 
+        }
+        .circuit-svg { 
+            width: 280px; stroke: var(--accent-blue); stroke-width: 2; fill: none; 
+            stroke-dasharray: 500; stroke-dashoffset: 500; 
+            animation: flow 3s infinite alternate ease-in-out; 
+        }
         @keyframes flow { to { stroke-dashoffset: 0; filter: drop-shadow(0 0 15px var(--accent-blue)); } }
         
-        /* Nav & Header */
-        .navbar { background: var(--navy) !important; padding: 15px 0; }
-        .header-section { background: linear-gradient(135deg, var(--navy), #162e58); color: white; padding: 100px 0; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+        /* Blackhole & Warp Canvas */
+        #blackhole-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            filter: blur(1px);
+        }
+
+        /* Nav */
+        .navbar { 
+            background: rgba(10, 14, 20, 0.8) !important; 
+            backdrop-filter: blur(15px);
+            padding: 15px 0; 
+            border-bottom: 1px solid rgba(0, 210, 255, 0.2);
+        }
+        
+        /* Header Section dengan Blackhole Visual */
+        .header-section { 
+            position: relative;
+            padding: 150px 0 100px 0; 
+            overflow: visible;
+        }
+
+        .singularity-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: black;
+            border-radius: 50%;
+            z-index: -1;
+            box-shadow: 
+                0 0 60px 20px #000,
+                0 0 100px 30px var(--event-horizon),
+                0 0 200px 60px rgba(0, 210, 255, 0.1);
+            animation: pulse-gravity 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse-gravity {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+        }
+
+        /* GFX Manipulation: Elemen seakan tertarik */
+        .attraction-zone {
+            transform-style: preserve-3d;
+        }
         
         /* Animasi Reveal */
-        .text-reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.23, 1, 0.32, 1); }
-        .text-reveal.active { opacity: 1; transform: translateY(0); }
+        .text-reveal { 
+            opacity: 0; 
+            transform: translateY(40px) translateZ(0); 
+            transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); 
+        }
+        .text-reveal.active { 
+            opacity: 1; 
+            transform: translateY(0) translateZ(50px); /* Teks sedikit "maju" keluar dari layar */
+        }
         
-        /* Kartu Kontak Interaktif */
+        /* Kartu Kontak (Content & Effect Tetap) */
         .contact-link { 
             text-decoration: none; 
-            color: #444; 
+            color: #fff; 
             display: flex; 
             align-items: center; 
             padding: 25px; 
-            border-radius: 20px; 
-            transition: 0.3s; 
-            background: white; 
-            margin-bottom: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border-left: 8px solid var(--accent-blue);
+            border-radius: 24px; 
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            background: rgba(255, 255, 255, 0.05); 
+            margin-bottom: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
+
         .contact-link:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15); 
-            color: var(--navy);
+            transform: scale(1.05) translateZ(30px); 
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.3); 
+            border-color: var(--accent-blue);
         }
-        .icon-wa { color: #25D366; font-size: 2.5rem; margin-right: 25px; }
-        .icon-ig { color: #E4405F; font-size: 2.5rem; margin-right: 25px; }
+
+        .icon-wa { color: #25D366; font-size: 2.5rem; margin-right: 25px; filter: drop-shadow(0 0 10px rgba(37, 211, 102, 0.5)); }
+        .icon-ig { color: #E4405F; font-size: 2.5rem; margin-right: 25px; filter: drop-shadow(0 0 10px rgba(228, 64, 95, 0.5)); }
+
+        .vignette-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
+
+<!-- Vignette untuk fokus ke tengah -->
+<div class="vignette-overlay"></div>
 
 <div id="intro-loader">
     <svg class="circuit-svg" viewBox="0 0 100 100"><path d="M0,50 L30,50 L40,20 L60,80 L70,50 L100,50" /></svg>
     <div style="color: white; margin-top: 20px; font-family: 'Courier New'; letter-spacing: 3px;">ESTABLISHING CONNECTION...</div>
 </div>
+
+<canvas id="blackhole-canvas"></canvas>
 
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
@@ -68,21 +161,22 @@
     </div>
 </nav>
 
-<div class="header-section text-center">
+<div class="header-section text-center attraction-zone">
+    <div class="singularity-core"></div>
     <div class="container">
-        <h1 class="display-3 fw-bold text-reveal">Contact Me</h1>
-        <p class="lead text-reveal">"Be Prepared for our EXCITEMENT!!!"</p>
+        <h1 class="display-3 fw-bold text-reveal" style="text-shadow: 0 0 20px rgba(0,210,255,0.5);">Contact Me</h1>
+        <p class="lead text-reveal" style="letter-spacing: 2px;">"Be Prepared for our EXCITEMENT!!!"</p>
     </div>
 </div>
 
-<div class="container py-5">
+<div class="container py-5 attraction-zone" style="position: relative; z-index: 2;">
     <div class="row justify-content-center">
         <div class="col-lg-6">
             <a href="https://wa.me/6281320711880" target="_blank" class="contact-link text-reveal">
                 <i class="fa-brands fa-whatsapp icon-wa"></i>
                 <div class="text-start">
                     <h5 class="mb-0 fw-bold">WhatsApp</h5>
-                    <span class="text-secondary">081320711880</span>
+                    <span style="color: #ccc;">081320711880</span>
                 </div>
             </a>
 
@@ -90,7 +184,7 @@
                 <i class="fa-brands fa-instagram icon-ig"></i>
                 <div class="text-start">
                     <h5 class="mb-0 fw-bold">Instagram</h5>
-                    <span class="text-secondary">@alexander_augustino</span>
+                    <span style="color: #ccc;">@alexander_augustino</span>
                 </div>
             </a>
         </div>
@@ -98,6 +192,77 @@
 </div>
 
 <script>
+    // --- SINGULARITY ENGINE (Blackhole Effect) ---
+    const canvas = document.getElementById('blackhole-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function initCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        particles = [];
+        for (let i = 0; i < 150; i++) {
+            particles.push(new Particle());
+        }
+    }
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+
+        reset() {
+            // Spawn partikel di luar radius tertentu agar seolah tertarik dari luar
+            const angle = Math.random() * Math.PI * 2;
+            const dist = Math.max(width, height) * (0.5 + Math.random() * 0.5);
+            this.x = width / 2 + Math.cos(angle) * dist;
+            this.y = height / 2 + Math.sin(angle) * dist;
+            this.size = Math.random() * 2 + 0.5;
+            this.speed = Math.random() * 2 + 1;
+            this.brightness = Math.random() * 0.5 + 0.5;
+        }
+
+        update() {
+            const dx = width / 2 - this.x;
+            const dy = height / 2 - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 20) {
+                this.reset();
+            } else {
+                // Tarikan gravitasi: Semakin dekat semakin cepat
+                const force = Math.min(8, 500 / distance);
+                this.x += (dx / distance) * force * this.speed;
+                this.y += (dy / distance) * force * this.speed;
+            }
+        }
+
+        draw() {
+            ctx.fillStyle = `rgba(0, 210, 255, ${this.brightness})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function animate() {
+        // Efek trail/motion blur
+        ctx.fillStyle = 'rgba(5, 8, 10, 0.2)';
+        ctx.fillRect(0, 0, width, height);
+
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    animate();
+
+    // --- LOADER & REVEAL LOGIC ---
     window.addEventListener('load', () => {
         const loader = document.getElementById('intro-loader');
         setTimeout(() => {
@@ -105,7 +270,6 @@
                 loader.style.opacity = '0'; 
                 loader.style.pointerEvents = 'none';
                 
-                // Trigger animasi teks satu per satu
                 document.querySelectorAll('.text-reveal').forEach((el, index) => {
                     setTimeout(() => el.classList.add('active'), 400 + (index * 200));
                 });
