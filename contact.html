@@ -56,14 +56,13 @@
             border-bottom: 1px solid rgba(0, 210, 255, 0.1);
         }
         
-        /* Header Section - Padding disesuaikan agar tombol naik */
         .header-section { 
             position: relative;
             padding: 160px 0 60px 0; 
             overflow: visible;
         }
 
-        /* Blackhole Visual - Small Core with Accretion Trail */
+        /* Blackhole Visual - VERTICAL ORIENTATION */
         .singularity-container {
             position: absolute;
             top: 50%;
@@ -75,52 +74,53 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transform-style: preserve-3d;
         }
 
         .bh-disk {
             position: absolute;
-            width: 120px; /* Inti diperkecil */
-            height: 120px;
+            width: 110px;
+            height: 110px;
             background: #000;
             border-radius: 50%;
             box-shadow: 
                 0 0 30px 5px #000,
                 0 0 60px 10px var(--deep-blue),
                 0 0 100px 20px var(--glow-blue);
-            z-index: 2;
+            z-index: 10;
         }
 
-        /* Trail Cakram Akresi Biru (Thin & Glowing) */
+        /* Cakram Akresi Vertikal & Berputar Searah Jarum Jam */
         .accretion-trail {
             position: absolute;
-            width: 450px;
-            height: 450px;
+            width: 500px;
+            height: 500px;
             border-radius: 50%;
-            background: radial-gradient(circle, transparent 45%, var(--accent-blue) 49%, transparent 55%);
-            filter: blur(12px);
-            opacity: 0.5;
-            animation: rotate-trail 8s linear infinite;
-            transform: rotateX(75deg); /* Membuat kesan cakram pipih */
+            background: radial-gradient(circle, transparent 40%, var(--accent-blue) 48%, transparent 52%);
+            filter: blur(15px);
+            opacity: 0.4;
+            /* Diubah ke rotateY untuk efek vertikal */
+            animation: rotate-vertical 6s linear infinite;
         }
 
         .accretion-trail-inner {
             position: absolute;
-            width: 320px;
-            height: 320px;
+            width: 350px;
+            height: 350px;
             border-radius: 50%;
-            background: radial-gradient(circle, transparent 40%, var(--deep-blue) 50%, transparent 60%);
-            filter: blur(8px);
-            opacity: 0.6;
-            animation: rotate-trail 5s linear infinite reverse;
-            transform: rotateX(75deg);
+            background: radial-gradient(circle, transparent 38%, var(--deep-blue) 50%, transparent 55%);
+            filter: blur(10px);
+            opacity: 0.5;
+            /* Reverse untuk efek kedalaman dinamis */
+            animation: rotate-vertical 4s linear infinite reverse;
         }
 
-        @keyframes rotate-trail {
-            from { transform: rotateX(75deg) rotate(0deg); }
-            to { transform: rotateX(75deg) rotate(360deg); }
+        /* Keyframe Rotasi Vertikal (Sumbu Y) */
+        @keyframes rotate-vertical {
+            from { transform: rotateY(75deg) rotateZ(0deg); }
+            to { transform: rotateY(75deg) rotateZ(360deg); }
         }
 
-        /* GFX Manipulation */
         .attraction-zone { transform-style: preserve-3d; }
         
         .text-reveal { 
@@ -133,7 +133,6 @@
             transform: translateY(0) translateZ(80px); 
         }
         
-        /* Kartu Kontak - Tema Biru */
         .contact-link { 
             text-decoration: none; color: #fff; display: flex; align-items: center; 
             padding: 22px; border-radius: 24px; 
@@ -231,7 +230,8 @@
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
         particles = [];
-        for (let i = 0; i < 150; i++) {
+        // Meningkatkan jumlah partikel untuk efek chaos yang lebih padat
+        for (let i = 0; i < 200; i++) {
             particles.push(new Particle());
         }
     }
@@ -242,14 +242,22 @@
         }
 
         reset() {
-            const angle = Math.random() * Math.PI * 2;
-            const dist = Math.max(width, height) * (Math.random() * 0.7 + 0.3);
-            this.x = width / 2 + Math.cos(angle) * dist;
-            this.y = height / 2 + Math.sin(angle) * dist;
-            this.size = Math.random() * 1.5 + 0.5;
-            this.speed = Math.random() * 2 + 1;
-            // Partikel sekarang Biru & Putih
-            this.color = Math.random() > 0.4 ? '#00d2ff' : '#ffffff';
+            // Posisi awal jauh dari pusat
+            this.angle = Math.random() * Math.PI * 2;
+            this.radius = Math.max(width, height) * (Math.random() * 0.6 + 0.2);
+            
+            this.x = width / 2 + Math.cos(this.angle) * this.radius;
+            this.y = height / 2 + Math.sin(this.angle) * this.radius;
+            
+            this.size = Math.random() * 1.8 + 0.2;
+            // Kecepatan putaran (searah jarum jam)
+            this.velocity = Math.random() * 0.02 + 0.01;
+            // Kecepatan tertarik ke dalam (sentripetal)
+            this.accel = Math.random() * 2 + 1;
+            this.color = Math.random() > 0.3 ? '#00d2ff' : '#ffffff';
+            
+            // Simpan posisi sebelumnya untuk trail effect
+            this.history = [{x: this.x, y: this.y}];
         }
 
         update() {
@@ -257,31 +265,56 @@
             const targetX = rect.left + rect.width / 2;
             const targetY = rect.top + rect.height / 2;
 
-            const dx = targetX - this.x;
-            const dy = targetY - this.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            // Logika Spiral/Chaos: Mengurangi radius sambil menambah sudut
+            this.radius -= this.accel;
+            this.angle += this.velocity;
 
-            if (distance < 20) {
+            this.x = targetX + Math.cos(this.angle) * this.radius;
+            this.y = targetY + Math.sin(this.angle) * this.radius;
+
+            // Jika terlalu dekat dengan event horizon, reset
+            if (this.radius < 20) {
                 this.reset();
-            } else {
-                const force = Math.min(10, 600 / distance);
-                this.x += (dx / distance) * force * this.speed;
-                this.y += (dy / distance) * force * this.speed;
             }
+
+            // Menyimpan trail pendek
+            this.history.push({x: this.x, y: this.y});
+            if (this.history.length > 5) this.history.shift();
         }
 
         draw() {
+            // Menggambar garis trail (Chaos Lines)
+            ctx.beginPath();
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = this.size;
+            ctx.lineCap = 'round';
+            for (let i = 0; i < this.history.length - 1; i++) {
+                ctx.moveTo(this.history[i].x, this.history[i].y);
+                ctx.lineTo(this.history[i+1].x, this.history[i+1].y);
+            }
+            ctx.stroke();
+
+            // Efek kilau partikel
             ctx.fillStyle = this.color;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
             ctx.fill();
         }
     }
 
     function animate() {
-        ctx.fillStyle = 'rgba(2, 4, 6, 0.2)';
+        // Overlay hitam transparan menciptakan motion blur/trail
+        ctx.fillStyle = 'rgba(2, 4, 6, 0.15)';
         ctx.fillRect(0, 0, width, height);
-        particles.forEach(p => { p.update(); p.draw(); });
+        
+        // Gunakan lighter composite untuk efek glow tabrakan debu
+        ctx.globalCompositeOperation = 'lighter';
+        particles.forEach(p => { 
+            p.update(); 
+            p.draw(); 
+        });
+        ctx.globalCompositeOperation = 'source-over';
+        
         requestAnimationFrame(animate);
     }
 
